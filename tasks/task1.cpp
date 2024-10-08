@@ -42,4 +42,4 @@ int main() {
 		}
 	}
 
-	std::cout << "Number of the most little out of biggest elements" << minIndex + 1 << std::endl;
+	std::cout << "Number of the most little out of biggest elements" << minIndex + 1 << std::endl;}
