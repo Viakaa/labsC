@@ -21,7 +21,7 @@ int main() {
 	for (int j = 0; j < m; j++) {
 		for (int i = 1; i < n; i++) {
 			if (*(*(matr + i) + j) > maxInCol[j]) {
-				maxInCol[j] = *(*(matr + i) + j);
+				maxInCol[j] = matr[0][j];
 			}
 		}
 	}
