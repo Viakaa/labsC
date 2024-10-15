@@ -1,36 +1,22 @@
 #include <iostream>
-#include <string>
+#include <string.h>
+#include <cctype>
+using namespace std;
 
-struct Student {
-    std::string name;
-    std::string subject;
-    int retakes;
-};
 
 int main() {
-    const int student_number = 5; 
-    Student students[student_number] = {
-        {"Danyliuk Olena", "Mathematics", 3},
-        {"Sydorenko Anna", "Physics", 1},
-        {"Sukhai Roman", "Chemistry", 2},
-        {"Honcharuk Dmytro", "History", 5},
-        {"Melnyk Iryna", "Informatics", 4}
-    };
+	char str[500] = "string theory, 9in5 particle physics, a theory that attempts to merge 3quantum5 mechanics with 9Albert3 Einstein�s general theory of 4relativity0. The name string theory comes from the 3modeling4 of subatomic particles as tiny 9one-dimensional0 �stringlike� entities rather than the more conventional 7approach1 in which they are modeled as 2zero-dimensional5 point particles. ";
+	char* context = nullptr;
+	char* curWord = strtok_s(str, " ,.", &context);
+	cout << "Words that have numbers at the start and at the ends of them:" << endl;
+	while (curWord) {
+		size_t len = strlen(curWord);
+		if ((curWord[0] >= '0' && curWord[0] <= '9') &&
+			(curWord[len - 1] >= '0' && curWord[len - 1] <= '9')) {
+			cout << curWord << endl;
+		}
+		curWord = strtok_s(NULL, " .,", &context);
+	}
 
-    for (int i = 0; i < student_number - 1; i++) {
-        for (int j = 0; j < student_number - i - 1; j++) {
-            if (students[j].retakes > students[j + 1].retakes) {
-                Student temp = students[j];
-                students[j] = students[j + 1];
-                students[j + 1] = temp;
-            }
-        }
-    }
-
-    std::cout << "List of students sorted by the number of retakes:\n";
-    for (int i = 0; i < student_number; i++) {
-        std::cout << students[i].name << ", " << students[i].subject << ": " << students[i].retakes << " retakes\n";
-    }
-
-    return 0;
+	return 0;
 }

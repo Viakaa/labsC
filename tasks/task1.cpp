@@ -1,45 +1,28 @@
 #include <iostream>
-#include <conio.h>
+#include<cmath>
 
+using namespace std;
 
 int main() {
-	const int n = 4, m = 4;
-	int matr[n][m], maxInCol[m], minIndex, minValue;
 
-	std::cout << "Matrix:";
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			std::cin >> matr[i][j];
+	double a = 5;
+	double y = 3;
+	double b = a / y;
+	double hx = 0.5;
+	double x_start = -2.5;
+	double x_end = 2;
+
+	for (double x = x_start; x <= x_end; x += hx) {
+		double result;
+		if (abs(x) < a / b) {
+			result = sin(abs(a * x + b));
 		}
-	}
-
-	for (int j = 0; j < m; j++) {
-		maxInCol[j] = *(*(matr)+j);
-	}
-
-	for (int j = 0; j < m; j++) {
-		for (int i = 1; i < n; i++) {
-			if (*(*(matr + i) + j) > maxInCol[j]) {
-				maxInCol[j] = matr[0][j];
-			}
+		else {
+			result = sin(abs(a * x - b));
 		}
+		cout << "x =" << x << ", y is " << result << endl;
+
 	}
-
-	std::cout << "The biggest number in every in column:";
-	for (int j = 0; j < m; j++) {
-		std::cout << *(maxInCol + j) << " ";
-	}
-
-
-	std::cout << std::endl;
-	minValue = *maxInCol;
-	minIndex = 0;
-	for (int j = 1; j < m; j++) {
-		if (*(maxInCol + j) < minValue) {
-			minValue = *(maxInCol + j);
-			minIndex = j;
-		}
-	}
-
-	std::cout << "Number of the most little out of biggest elements" << minIndex + 1 << std::endl;}
+	return 0;
+}

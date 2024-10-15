@@ -1,17 +1,40 @@
 #include <iostream>
-#include <string.h>
-using namespace std;
-
+#include <conio.h>
 
 int main() {
-	char str[500] = "string theory, 9in5 particle physics, a theory that attempts to merge 3quantum5 mechanics with 9Albert3 Einstein’s general theory of 4relativity0. The name string theory comes from the 3modeling4 of subatomic particles as tiny 9one-dimensional0 “stringlike” entities rather than the more conventional 7approach1 in which they are modeled as 2zero-dimensional5 point particles. ";
-	char* curWord = strtok(str, ",.!?");
-
-		while (curWord) {
-			int len = strlen(curWord);
-			if (isdigit(curWord[0]) && isdigit(curWord[len - 1])) {
-				cout << curWord << endl;
-			}
-			curWord = strtok(NULL, ".,!?");
+	int i, j;
+	const int n = 4, m = 4;
+	int matr[n][m], maxInCol[m], minValue;
+	std::cout << "Input matrix:\n";
+	for (i = 0; i < n; i++) {
+		for (j = 0;j < m;j++) {
+			std::cin >> *(*(matr + i) + j);
 		}
+	}
+
+
+	for (j = 0; j < m; j++) {
+		maxInCol[j] = *(*(matr+0)+j);
+	}
+
+	for (j = 0;j < m;j++) {
+		for (i = 0;i < n;i++) {
+			if (*(*(matr + i) + j) > maxInCol[j]) {
+				maxInCol[j] = *(*(matr + i) + j);
+			}
+		}
+	}
+	std::cout << "The biggest number in every column:";
+
+	for ( j = 0;j < m;j++) {
+		std::cout << *(maxInCol + j) << " ";
+	}
+		std::cout << std::endl;
+	minValue = *maxInCol;
+	for ( j = 1; j < m;j++) {
+		if (*(maxInCol + j) < minValue) {
+			minValue = *(maxInCol + j);
+		}
+	}
+	std::cout << "Number of the most little out of the biggest elemets:" << minValue << std::endl;
 }
