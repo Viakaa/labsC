@@ -3,7 +3,7 @@
 
 using namespace std;
 
-const int MAX_SIZE = 100;  
+const int MAX_SIZE = 10;  
 
 int main() {
     int matrix[MAX_SIZE][MAX_SIZE];
