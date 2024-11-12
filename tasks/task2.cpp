@@ -12,7 +12,6 @@ int main() {
 		}
 	}
 
-
 	for (j = 0; j < m; j++) {
 		maxInCol[j] = *(*(matr+0)+j);
 	}

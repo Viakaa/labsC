@@ -7,7 +7,7 @@ const int MAX_SIZE = 10;
 
 int main() {
     int matrix[MAX_SIZE][MAX_SIZE];
-    int rows, cols;
+    int n, m;
 
     ifstream inputFile("matrix.txt");
     if (!inputFile) {
@@ -15,19 +15,19 @@ int main() {
         return 1;
     }
 
-    inputFile >> rows >> cols;
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+    inputFile >> n >> m;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
             inputFile >> matrix[i][j];
         }
     }
     inputFile.close();
 
-    ofstream outputFile("output.txt");
-    ofstream binaryFile("output.bin", ios::binary);
+    ofstream outputFile("matrixOutput.txt");
+    ofstream binaryFile("matrixOutput.bin", ios::binary);
 
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
             cout << matrix[i][j] << " ";
             outputFile << matrix[i][j] << " ";
             binaryFile.write(reinterpret_cast<const char*>(&matrix[i][j]), sizeof(matrix[i][j]));
@@ -40,8 +40,8 @@ int main() {
     binaryFile.close();
 
     int colsWithZeros = 0;
-    for (int j = 0; j < cols; j++) {
-        for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < m; j++) {
+        for (int i = 0; i < n; i++) {
             if (matrix[i][j] == 0) {
                 colsWithZeros++;
                 break;
@@ -50,9 +50,9 @@ int main() {
     }
 
     int longestRow = -1, maxLength = 0;
-    for (int i = 0; i < rows; i++) {
+    for (int i = 0; i < n; i++) {
         int currentLength = 1;
-        for (int j = 1; j < cols; j++) {
+        for (int j = 1; j < m; j++) {
             if (matrix[i][j] == matrix[i][j - 1]) {
                 currentLength++;
             }

@@ -16,10 +16,10 @@ using namespace std;
    }                                 \
    cout << endl;
 
-#define PRODUCT_OF_EVEN_INDEX(arr, n)       \
-   int product = 1;                         \
-   for (int i = 0; i < n; i += 2) {        \
-       product *= arr[i];                   \
+#define PRODUCT_OF_EVEN_INDEX(arr, n, product)       \
+   product = 1;                                      \
+   for (int i = 0; i < n; i += 2) {                  \
+       product *= arr[i];                            \
    }
 
 #define SUM_BETWEEN_ZEROES(arr, n, sum)       \

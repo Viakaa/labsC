@@ -1,9 +1,9 @@
 #include <iostream>
 #include "header.h"
 using namespace std;
- 
+
 int main() {
-    const int N = 100;
+    const int N = 20;
     int arr[N];
     int n;
 
@@ -13,7 +13,8 @@ int main() {
     INPUT_ARRAY(arr, n);
     OUTPUT_ARRAY(arr, n);
 
-    PRODUCT_OF_EVEN_INDEX(arr, n);
+    int product;
+    PRODUCT_OF_EVEN_INDEX(arr, n, product);
     cout << "Product of elements at even indices: " << product << endl;
 
     int sum;
