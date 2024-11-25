@@ -1,139 +1,156 @@
 #include <iostream>
 #include <string>
-#include <stdexcept>
 using namespace std;
 
 template <typename T>
-class AbstractArray {
+class BaseArray {
 protected:
-    T* array;
-    int size;
-    int capacity;
+    T* array;      
+    int size;       
+    int capacity;   
 
+public:
+    BaseArray(int capacity = 10) : size(0), capacity(capacity) {
+        array = new T[capacity];
+    }
+
+    virtual ~BaseArray() {
+        delete[] array;
+    }
+
+    void add(const T& element) {
+        if (size == capacity) {
+            resize();
+        }
+        array[size++] = element;
+    }
+
+    T& get(int index) const {
+        if (index < 0 || index >= size) {
+            throw out_of_range("Index out of range");
+        }
+        return array[index];
+    }
+
+    int getSize() const {
+        return size;
+    }
+
+    virtual void input() = 0;
+    virtual void output() const = 0;
+
+protected:
     void resize() {
         capacity *= 2;
         T* newArray = new T[capacity];
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; ++i) {
             newArray[i] = array[i];
         }
         delete[] array;
         array = newArray;
     }
+};
+
+class Institute {
+private:
+    string name;
+    string address;
 
 public:
-    AbstractArray(int initialCapacity = 5)
-        : size(0), capacity(initialCapacity) {
-        array = new T[capacity];
-    }
+    Institute(const string& name = "", const string& address = "")
+        : name(name), address(address) {}
 
-    virtual ~AbstractArray() {
-        delete[] array;
-    }
+    string getName() const { return name; }
+    string getAddress() const { return address; }
 
-    virtual void add(const T& item) = 0;
-    virtual void remove(const string& name) = 0;
-    virtual void print() const = 0;
+    friend ostream& operator<<(ostream& os, const Institute& institute) {
+        os << "Institute: " << institute.name << ", Address: " << institute.address;
+        return os;
+    }
 };
 
 class Group {
 private:
     string name;
-    int numStudents;
+    int studentCount;
     double averageScore;
 
 public:
-    Group() : name(""), numStudents(0), averageScore(0.0) {}
-
-    Group(string name, int numStudents, double averageScore)
-        : name(name), numStudents(numStudents), averageScore(averageScore) {}
+    Group(const string& name = "", int studentCount = 0, double averageScore = 0.0)
+        : name(name), studentCount(studentCount), averageScore(averageScore) {}
 
     string getName() const { return name; }
-    int getNumStudents() const { return numStudents; }
+    int getStudentCount() const { return studentCount; }
     double getAverageScore() const { return averageScore; }
 
-    void print() const {
-        cout << "Group: " << name << ", Students: " << numStudents
-             << ", Avg. Score: " << averageScore << "\n";
+    friend ostream& operator<<(ostream& os, const Group& group) {
+        os << "Group: " << group.name << ", Students: " << group.studentCount
+            << ", Average Score: " << group.averageScore;
+        return os;
     }
 };
 
-class FacultyGroups : public AbstractArray<Group> {
+class Faculty {
 private:
-    string facultyName;
+    string fullName;
+    string shortName;
+    Institute institute;
 
 public:
-    FacultyGroups(string facultyName, int initialCapacity = 5)
-        : AbstractArray<Group>(initialCapacity), facultyName(facultyName) {}
+    Faculty(const string& fullName = "", const string& shortName = "", const Institute& institute = {})
+        : fullName(fullName), shortName(shortName), institute(institute) {}
 
-    void add(const Group& group) override {
-        if (size == capacity) {
-            resize();
-        }
-        array[size++] = group;
+    string getFullName() const { return fullName; }
+    string getShortName() const { return shortName; }
+    Institute getInstitute() const { return institute; }
+
+    friend ostream& operator<<(ostream& os, const Faculty& faculty) {
+        os << "Faculty: " << faculty.fullName << " (" << faculty.shortName << ")\n"
+            << faculty.institute;
+        return os;
+    }
+};
+
+class FacultyArray : public BaseArray<Faculty> {
+public:
+    FacultyArray(int capacity = 10) : BaseArray<Faculty>(capacity) {}
+    void input() override {
+        string fullName, shortName, instituteName, instituteAddress;
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+
+        cout << "Enter faculty full name: ";
+        getline(cin, fullName);
+
+        cout << "Enter faculty short name: ";
+        getline(cin, shortName);
+
+        cout << "Enter institute name: ";
+        getline(cin, instituteName);
+
+        cout << "Enter institute address: ";
+        getline(cin, instituteAddress);
+
+        add(Faculty(fullName, shortName, Institute(instituteName, instituteAddress)));
     }
 
-    void remove(const string& groupName) override {
-        for (int i = 0; i < size; i++) {
-            if (array[i].getName() == groupName) {
-                for (int j = i; j < size - 1; j++) {
-                    array[j] = array[j + 1];
-                }
-                size--;
-                return;
-            }
-        }
-        cout << "Group not found: " << groupName << "\n";
-    }
 
-    void print() const override {
-        cout << "Faculty: " << facultyName << "\n";
-        for (int i = 0; i < size; i++) {
-            array[i].print();
-        }
-    }
 
-    Group getTopGroup() const {
-        if (size == 0) {
-            throw runtime_error("No groups in the list.");
+    void output() const override {
+        for (int i = 0; i < size; ++i) {
+            cout << array[i] << endl;
         }
-        Group topGroup = array[0];
-        for (int i = 1; i < size; i++) {
-            if (array[i].getAverageScore() > topGroup.getAverageScore()) {
-                topGroup = array[i];
-            }
-        }
-        return topGroup;
     }
 };
 
 int main() {
-    FacultyGroups csFaculty("Computer Science");
+    FacultyArray facultyArray;
 
-    Group g1("CS-21", 14, 85.4);
-    Group g2("CS-22", 16, 90.1);
-    Group g3("CS-23", 17, 78.5);
+    facultyArray.input();  
+    facultyArray.input(); 
 
-    csFaculty.add(g1);
-    csFaculty.add(g2);
-    csFaculty.add(g3);
-
-    cout << "All groups:\n";
-    csFaculty.print();
-
-    cout << "\nRemoving group CS-23...\n";
-    csFaculty.remove("CS-23");
-
-    cout << "All groups after removal:\n";
-    csFaculty.print();
-
-    try {
-        Group topGroup = csFaculty.getTopGroup();
-        cout << "\nTop group:\n";
-        topGroup.print();
-    }
-    catch (const runtime_error& e) {
-        cout << e.what() << "\n";
-    }
+    cout << "\nFaculties:\n";
+    facultyArray.output();
 
     return 0;
 }

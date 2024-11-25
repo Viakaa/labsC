@@ -12,7 +12,7 @@ double df(double x) {
 }
 
 void criticalPoints(double a, double b, double step = 0.001) {
-	for (double x = a; x <= b; x = +step) {
+	for (double x = a; x <= b; x =+ step) {
 		if (fabs(df(x)) < 1e-6) {
 			cout << "Критична точка знайдена на x = " << x << "f(x)=" << f(x)<< endl;
 		}
