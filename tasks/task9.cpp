@@ -1,156 +1,104 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <memory>
 using namespace std;
 
 template <typename T>
-class BaseArray {
+class DynamicArray {
 protected:
-    T* array;      
-    int size;       
-    int capacity;   
+    vector<T> array;
 
 public:
-    BaseArray(int capacity = 10) : size(0), capacity(capacity) {
-        array = new T[capacity];
-    }
-
-    virtual ~BaseArray() {
-        delete[] array;
-    }
+    DynamicArray() = default;
+    virtual ~DynamicArray() = default;
 
     void add(const T& element) {
-        if (size == capacity) {
-            resize();
-        }
-        array[size++] = element;
+        array.push_back(element);
     }
 
-    T& get(int index) const {
-        if (index < 0 || index >= size) {
+    T get(size_t index) const {
+        if (index < array.size()) {
+            return array[index];
+        } else {
             throw out_of_range("Index out of range");
         }
-        return array[index];
     }
 
-    int getSize() const {
-        return size;
+    size_t size() const {
+        return array.size();
     }
 
-    virtual void input() = 0;
-    virtual void output() const = 0;
-
-protected:
-    void resize() {
-        capacity *= 2;
-        T* newArray = new T[capacity];
-        for (int i = 0; i < size; ++i) {
-            newArray[i] = array[i];
-        }
-        delete[] array;
-        array = newArray;
-    }
+    virtual void input() = 0; 
+    virtual void output() const = 0; 
 };
 
-class Institute {
-private:
-    string name;
-    string address;
-
-public:
-    Institute(const string& name = "", const string& address = "")
-        : name(name), address(address) {}
-
-    string getName() const { return name; }
-    string getAddress() const { return address; }
-
-    friend ostream& operator<<(ostream& os, const Institute& institute) {
-        os << "Institute: " << institute.name << ", Address: " << institute.address;
-        return os;
-    }
-};
-
-class Group {
-private:
+struct Group {
     string name;
     int studentCount;
     double averageScore;
 
-public:
     Group(const string& name = "", int studentCount = 0, double averageScore = 0.0)
         : name(name), studentCount(studentCount), averageScore(averageScore) {}
 
-    string getName() const { return name; }
-    int getStudentCount() const { return studentCount; }
-    double getAverageScore() const { return averageScore; }
-
     friend ostream& operator<<(ostream& os, const Group& group) {
-        os << "Group: " << group.name << ", Students: " << group.studentCount
-            << ", Average Score: " << group.averageScore;
+        os << "Group: " << group.name
+           << ", Students: " << group.studentCount
+           << ", Average Score: " << group.averageScore;
         return os;
+    }
+
+    friend istream& operator>>(istream& is, Group& group) {
+        cout << "Enter group name: ";
+        getline(is, group.name);
+        cout << "Enter student count: ";
+        is >> group.studentCount;
+        cout << "Enter average score: ";
+        is >> group.averageScore;
+        is.ignore();
+        return is;
     }
 };
 
-class Faculty {
-private:
-    string fullName;
-    string shortName;
-    Institute institute;
-
+class GroupArray : public DynamicArray<Group> {
 public:
-    Faculty(const string& fullName = "", const string& shortName = "", const Institute& institute = {})
-        : fullName(fullName), shortName(shortName), institute(institute) {}
-
-    string getFullName() const { return fullName; }
-    string getShortName() const { return shortName; }
-    Institute getInstitute() const { return institute; }
-
-    friend ostream& operator<<(ostream& os, const Faculty& faculty) {
-        os << "Faculty: " << faculty.fullName << " (" << faculty.shortName << ")\n"
-            << faculty.institute;
-        return os;
-    }
-};
-
-class FacultyArray : public BaseArray<Faculty> {
-public:
-    FacultyArray(int capacity = 10) : BaseArray<Faculty>(capacity) {}
     void input() override {
-        string fullName, shortName, instituteName, instituteAddress;
+        int n;
+        cout << "Enter the number of groups: ";
+        cin >> n;
+        cin.ignore();
 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
-
-        cout << "Enter faculty full name: ";
-        getline(cin, fullName);
-
-        cout << "Enter faculty short name: ";
-        getline(cin, shortName);
-
-        cout << "Enter institute name: ";
-        getline(cin, instituteName);
-
-        cout << "Enter institute address: ";
-        getline(cin, instituteAddress);
-
-        add(Faculty(fullName, shortName, Institute(instituteName, instituteAddress)));
+        for (int i = 0; i < n; ++i) {
+            Group group;
+            cin >> group;
+            add(group);
+        }
     }
-
-
 
     void output() const override {
-        for (int i = 0; i < size; ++i) {
-            cout << array[i] << endl;
+        cout << "Groups in the array:\n";
+        for (const auto& group : array) {
+            cout << group << endl;
         }
     }
 };
 
 int main() {
-    FacultyArray facultyArray;
+    try {
+        GroupArray groupArray;
 
-    facultyArray.input();  
-    facultyArray.input(); 
+        groupArray.input();
 
-    cout << "\nFaculties:\n";
-    facultyArray.output();
+        groupArray.output();
+
+        groupArray.add(Group("NewGroup", 20, 88.5));
+        cout << "\nAfter adding a new group:\n";
+        groupArray.output();
+
+        cout << "\nGroup at index 0: " << groupArray.get(0) << endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
 
     return 0;
 }
